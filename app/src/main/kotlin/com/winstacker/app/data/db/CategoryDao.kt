@@ -1,0 +1,33 @@
+package com.winstacker.app.data.db
+
+import androidx.room.*
+import com.winstacker.app.data.model.Category
+import kotlinx.coroutines.flow.Flow
+
+@Dao
+interface CategoryDao {
+
+    @Query("SELECT * FROM categories ORDER BY sortOrder ASC, id ASC")
+    fun getAllCategories(): Flow<List<Category>>
+
+    @Query("SELECT * FROM categories WHERE id = :id")
+    suspend fun getCategoryById(id: Long): Category?
+
+    @Query("SELECT * FROM categories WHERE isPreset = 1 ORDER BY sortOrder ASC")
+    fun getPresetCategories(): Flow<List<Category>>
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertCategory(category: Category): Long
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertAll(categories: List<Category>)
+
+    @Update
+    suspend fun updateCategory(category: Category)
+
+    @Delete
+    suspend fun deleteCategory(category: Category)
+
+    @Query("SELECT COUNT(*) FROM categories")
+    suspend fun getCount(): Int
+}

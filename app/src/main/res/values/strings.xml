@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Wins Tracker</string>
+    <string name="widget_description">Weekly wins summary widget</string>
+    <string name="add_win">Log a Win</string>
+    <string name="today">Today</string>
+    <string name="this_week">This Week</string>
+    <string name="this_month">This Month</string>
+    <string name="this_year">This Year</string>
+    <string name="all_time">All Time</string>
+    <string name="stats">Stats</string>
+    <string name="settings">Settings</string>
+    <string name="categories">Categories</string>
+</resources>
