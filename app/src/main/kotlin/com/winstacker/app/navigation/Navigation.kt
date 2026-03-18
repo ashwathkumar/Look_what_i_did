@@ -82,11 +82,18 @@ fun WinsNavHost(
             )
         ) { backStack ->
             val winId = backStack.arguments?.getLong("winId") ?: -1L
+            // When launched via deep link, AddWin may be the root with no back stack.
+            // Fall back to Home so popBackStack() never silently fails.
+            fun navigateBack() {
+                if (!navController.popBackStack()) {
+                    navController.navigate(Screen.Home.route) { launchSingleTop = true }
+                }
+            }
             AddWinScreen(
                 winId = if (winId == -1L) null else winId,
-                onSaved = { navController.popBackStack() },
-                onDeleted = { navController.popBackStack() },
-                onBack = { navController.popBackStack() }
+                onSaved = { navigateBack() },
+                onDeleted = { navigateBack() },
+                onBack = { navigateBack() }
             )
         }
 
