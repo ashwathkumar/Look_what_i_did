@@ -29,6 +29,7 @@ fun HomeScreen(
     onNavigateToTimeline: (Timeframe) -> Unit,
     onNavigateToSettings: () -> Unit,
     onNavigateToStats: () -> Unit,
+    onEditWin: (Long) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val wins by viewModel.todayWins.collectAsStateWithLifecycle()
@@ -98,7 +99,7 @@ fun HomeScreen(
                 items(wins, key = { it.win.id }) { winWithCat ->
                     WinCard(
                         winWithCategory = winWithCat,
-                        onClick = { /* Navigate to edit if needed from home, or keep disabled */ },
+                        onClick = { onEditWin(winWithCat.win.id) },
                         onDelete = { viewModel.deleteWin(winWithCat.win.id) }
                     )
                 }

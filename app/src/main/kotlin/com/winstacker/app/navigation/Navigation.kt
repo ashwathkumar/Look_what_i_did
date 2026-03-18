@@ -43,7 +43,8 @@ fun WinsNavHost(
                     navController.navigate(Screen.Timeline.createRoute(timeframe = tf))
                 },
                 onNavigateToSettings = { navController.navigate(Screen.Settings.route) },
-                onNavigateToStats = { navController.navigate(Screen.Stats.route) }
+                onNavigateToStats = { navController.navigate(Screen.Stats.route) },
+                onEditWin = { winId -> navController.navigate(Screen.AddWin.createRoute(winId)) }
             )
         }
 
