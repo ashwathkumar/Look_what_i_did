@@ -1,13 +1,10 @@
 package com.winstacker.app.ui.home
 
-import androidx.compose.animation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.EmojiEvents
-import androidx.compose.material.icons.outlined.BarChart
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.EmojiEvents
 import androidx.compose.material3.*
@@ -19,7 +16,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.winstacker.app.ui.common.CategoryChip
 import com.winstacker.app.ui.common.WinCard
 import com.winstacker.app.viewmodel.HomeViewModel
 import com.winstacker.app.viewmodel.Timeframe

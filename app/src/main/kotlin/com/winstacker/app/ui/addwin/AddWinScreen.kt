@@ -18,8 +18,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.winstacker.app.data.model.Category
-import com.winstacker.app.data.model.Win
 import com.winstacker.app.ui.common.CategoryChip
 import com.winstacker.app.viewmodel.AddWinViewModel
 import java.time.LocalDate
@@ -35,18 +33,23 @@ fun AddWinScreen(
     viewModel: AddWinViewModel = hiltViewModel()
 ) {
     val categories by viewModel.categories.collectAsStateWithLifecycle()
+    val loadedWin by viewModel.loadedWin.collectAsStateWithLifecycle()
 
-    // In a real app we'd load the win by ID via a query; simplified here
-    val existingWin: Win? = null // Would be loaded from DB via winId
+    // Load existing win when editing
+    LaunchedEffect(winId) {
+        if (winId != null) viewModel.loadWin(winId)
+    }
 
-    var title by remember { mutableStateOf(existingWin?.title ?: "") }
-    var notes by remember { mutableStateOf(existingWin?.notes ?: "") }
-    var selectedCategoryId by remember { mutableStateOf<Long?>(existingWin?.categoryId) }
-    var selectedDate by remember {
+    // Form state — re-initialised when the loaded win arrives
+    var title by remember(loadedWin) { mutableStateOf(loadedWin?.title ?: "") }
+    var notes by remember(loadedWin) { mutableStateOf(loadedWin?.notes ?: "") }
+    var selectedCategoryId by remember(loadedWin) { mutableStateOf(loadedWin?.categoryId) }
+    var selectedDate by remember(loadedWin) {
         mutableStateOf(
-            existingWin?.let { LocalDate.ofEpochDay(it.dateEpochDay) } ?: LocalDate.now()
+            loadedWin?.let { LocalDate.ofEpochDay(it.dateEpochDay) } ?: LocalDate.now()
         )
     }
+
     var showDatePicker by remember { mutableStateOf(false) }
     var showDeleteConfirm by remember { mutableStateOf(false) }
     var titleError by remember { mutableStateOf(false) }
@@ -55,7 +58,8 @@ fun AddWinScreen(
         viewModel.saveSuccess.collect { onSaved() }
     }
 
-    if (showDeleteConfirm && existingWin != null) {
+    // Delete confirmation dialog
+    if (showDeleteConfirm && loadedWin != null) {
         AlertDialog(
             onDismissRequest = { showDeleteConfirm = false },
             title = { Text("Delete win?") },
@@ -63,7 +67,7 @@ fun AddWinScreen(
             confirmButton = {
                 TextButton(
                     onClick = {
-                        viewModel.deleteWin(existingWin) { onDeleted() }
+                        viewModel.deleteWin(loadedWin!!) { onDeleted() }
                         showDeleteConfirm = false
                     },
                     colors = ButtonDefaults.textButtonColors(
@@ -80,7 +84,7 @@ fun AddWinScreen(
     }
 
     if (showDatePicker) {
-        DatePickerDialog(
+        WinsDatePickerDialog(
             selectedDate = selectedDate,
             onDateSelected = { selectedDate = it },
             onDismiss = { showDatePicker = false }
@@ -97,7 +101,7 @@ fun AddWinScreen(
                     }
                 },
                 actions = {
-                    if (existingWin != null) {
+                    if (loadedWin != null) {
                         IconButton(onClick = { showDeleteConfirm = true }) {
                             Icon(
                                 Icons.Default.Delete,
@@ -184,15 +188,14 @@ fun AddWinScreen(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
-            LazyRow(
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 items(categories) { category ->
                     CategoryChip(
                         category = category,
                         selected = selectedCategoryId == category.id,
                         onClick = {
-                            selectedCategoryId = if (selectedCategoryId == category.id) null else category.id
+                            selectedCategoryId =
+                                if (selectedCategoryId == category.id) null else category.id
                         }
                     )
                 }
@@ -208,7 +211,7 @@ fun AddWinScreen(
                         return@Button
                     }
                     viewModel.saveWin(
-                        existingWin = existingWin,
+                        existingWin = loadedWin,
                         title = title,
                         notes = notes,
                         categoryId = selectedCategoryId,
@@ -219,7 +222,7 @@ fun AddWinScreen(
                 contentPadding = PaddingValues(16.dp)
             ) {
                 Text(
-                    text = if (existingWin == null) "Save Win 🎉" else "Update Win",
+                    text = if (loadedWin == null) "Save Win 🎉" else "Update Win",
                     style = MaterialTheme.typography.titleMedium
                 )
             }
@@ -229,7 +232,7 @@ fun AddWinScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun DatePickerDialog(
+private fun WinsDatePickerDialog(
     selectedDate: LocalDate,
     onDateSelected: (LocalDate) -> Unit,
     onDismiss: () -> Unit
