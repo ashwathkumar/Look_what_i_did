@@ -10,13 +10,13 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.glance.*
 import androidx.glance.action.ActionParameters
 import androidx.glance.action.actionParametersOf
-import androidx.glance.action.actionStartActivity
 import androidx.glance.action.clickable
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.action.ActionCallback
 import androidx.glance.appwidget.action.actionRunCallback
 import androidx.glance.appwidget.cornerRadius
 import androidx.glance.appwidget.provideContent
+import androidx.glance.appwidget.state.getAppWidgetState
 import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.glance.layout.*
 import androidx.glance.state.PreferencesGlanceStateDefinition
@@ -64,18 +64,19 @@ class WinsWidget : GlanceAppWidget() {
         val allCategories = catRepo.getAllCategories().first()
         val categoryMap = allCategories.associateBy { it.id }
 
-        provideContent {
-            // Read Glance state reactively — re-renders automatically when state changes
-            val prefs = currentState<androidx.datastore.preferences.core.Preferences>()
-            val timeframeStr = prefs[KEY_TIMEFRAME] ?: Timeframe.WEEK.name
-            val showMenu = prefs[KEY_SHOW_MENU] ?: false
-            val timeframe = runCatching { Timeframe.valueOf(timeframeStr) }
-                .getOrDefault(Timeframe.WEEK)
+        // Read current prefs here (suspend context) so we can fetch DB data before provideContent
+        val currentPrefs = getAppWidgetState(context, PreferencesGlanceStateDefinition, id)
+        val timeframeStr = currentPrefs[KEY_TIMEFRAME] ?: Timeframe.WEEK.name
+        val timeframe = runCatching { Timeframe.valueOf(timeframeStr) }.getOrDefault(Timeframe.WEEK)
 
-            // DB data fetched once per provideGlance; updated via WinsWidget().update()
-            val today = LocalDate.now()
-            val (start, end) = computeDateRange(timeframe, today)
-            val categoryCounts = winRepo.getCategoryCountsInRange(start, end).first()
+        val today = LocalDate.now()
+        val (start, end) = computeDateRange(timeframe, today)
+        val categoryCounts = winRepo.getCategoryCountsInRange(start, end).first()
+
+        provideContent {
+            // showMenu is read reactively so the dropdown toggles without a full re-fetch
+            val prefs = currentState<androidx.datastore.preferences.core.Preferences>()
+            val showMenu = prefs[KEY_SHOW_MENU] ?: false
 
             WinsWidgetContent(
                 categoryCounts = categoryCounts,
@@ -149,18 +150,13 @@ private fun WinsWidgetContent(
                         )
                     }
 
-                    // Quick-add button — opens Add Win form directly
-                    val addIntent = Intent(LocalContext.current, MainActivity::class.java).apply {
-                        action = Intent.ACTION_VIEW
-                        data = Uri.parse("winstacker://add")
-                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-                    }
+                    // Quick-add button — opens Add Win form via ActionCallback
                     Box(
                         modifier = GlanceModifier
                             .background(themeGreen)
                             .cornerRadius(20.dp)
                             .padding(horizontal = 14.dp, vertical = 6.dp)
-                            .clickable(actionStartActivity(addIntent)),
+                            .clickable(actionRunCallback<LaunchAddWinAction>()),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
@@ -181,7 +177,7 @@ private fun WinsWidgetContent(
                         .fillMaxWidth()
                         .height(1.dp)
                         .background(dividerColor)
-                )
+                ) {}
                 Spacer(GlanceModifier.height(8.dp))
 
                 // ── Body: dropdown menu or category list ───────────────────
@@ -298,16 +294,18 @@ private fun WidgetCategoryRow(
     deepLinkParam: String,
     timeframe: String
 ) {
-    val intent = Intent(LocalContext.current, MainActivity::class.java).apply {
-        action = Intent.ACTION_VIEW
-        data = Uri.parse("winstacker://timeline?timeframe=$timeframe&categoryFilter=$deepLinkParam")
-        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-    }
     Row(
         modifier = GlanceModifier
             .fillMaxWidth()
             .padding(vertical = 3.dp)
-            .clickable(actionStartActivity(intent)),
+            .clickable(
+                actionRunCallback<LaunchTimelineAction>(
+                    actionParametersOf(
+                        ActionParameters.Key<String>("timeframe") to timeframe,
+                        ActionParameters.Key<String>("categoryFilter") to deepLinkParam
+                    )
+                )
+            ),
         verticalAlignment = Alignment.Vertical.CenterVertically
     ) {
         Text(
@@ -343,8 +341,6 @@ class ToggleMenuAction : ActionCallback {
                 this[KEY_SHOW_MENU] = !current
             }
         }
-        // State change triggers automatic re-render via currentState; also call update
-        // to ensure the widget refreshes even if composition was not active.
         WinsWidget().update(context, glanceId)
     }
 }
@@ -362,8 +358,39 @@ class ChangeTimeframeAction : ActionCallback {
                 this[KEY_SHOW_MENU] = false
             }
         }
-        // Must call update to re-fetch DB data for the new timeframe
         WinsWidget().update(context, glanceId)
+    }
+}
+
+class LaunchAddWinAction : ActionCallback {
+    override suspend fun onAction(
+        context: Context,
+        glanceId: GlanceId,
+        parameters: ActionParameters
+    ) {
+        val intent = Intent(context, MainActivity::class.java).apply {
+            action = Intent.ACTION_VIEW
+            data = Uri.parse("winstacker://add")
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        }
+        context.startActivity(intent)
+    }
+}
+
+class LaunchTimelineAction : ActionCallback {
+    override suspend fun onAction(
+        context: Context,
+        glanceId: GlanceId,
+        parameters: ActionParameters
+    ) {
+        val timeframe = parameters[ActionParameters.Key<String>("timeframe")] ?: "WEEK"
+        val categoryFilter = parameters[ActionParameters.Key<String>("categoryFilter")] ?: "all"
+        val intent = Intent(context, MainActivity::class.java).apply {
+            action = Intent.ACTION_VIEW
+            data = Uri.parse("winstacker://timeline?timeframe=$timeframe&categoryFilter=$categoryFilter")
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        }
+        context.startActivity(intent)
     }
 }
 

@@ -8,6 +8,8 @@ import com.winstacker.app.data.model.Win
 import com.winstacker.app.data.model.WinSource
 import com.winstacker.app.data.repository.CategoryRepository
 import com.winstacker.app.data.repository.WinRepository
+import androidx.glance.appwidget.GlanceAppWidgetManager
+import com.winstacker.app.widget.WinsWidget
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.*
@@ -72,7 +74,8 @@ class AddWinViewModel @Inject constructor(
                     )
                 )
             }
-            com.winstacker.app.widget.WinsWidget().updateAll(context)
+            GlanceAppWidgetManager(context).getGlanceIds(WinsWidget::class.java)
+                .forEach { WinsWidget().update(context, it) }
             _saveSuccess.emit(Unit)
         }
     }
@@ -80,7 +83,8 @@ class AddWinViewModel @Inject constructor(
     fun deleteWin(win: Win, onComplete: () -> Unit) {
         viewModelScope.launch {
             winRepository.deleteWin(win)
-            com.winstacker.app.widget.WinsWidget().updateAll(context)
+            GlanceAppWidgetManager(context).getGlanceIds(WinsWidget::class.java)
+                .forEach { WinsWidget().update(context, it) }
             onComplete()
         }
     }
