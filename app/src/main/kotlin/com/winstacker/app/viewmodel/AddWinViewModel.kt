@@ -74,8 +74,10 @@ class AddWinViewModel @Inject constructor(
                     )
                 )
             }
-            GlanceAppWidgetManager(context).getGlanceIds(WinsWidget::class.java)
-                .forEach { WinsWidget().update(context, it) }
+            runCatching {
+                GlanceAppWidgetManager(context).getGlanceIds(WinsWidget::class.java)
+                    .forEach { WinsWidget().update(context, it) }
+            }
             _saveSuccess.emit(Unit)
         }
     }
@@ -83,8 +85,10 @@ class AddWinViewModel @Inject constructor(
     fun deleteWin(win: Win, onComplete: () -> Unit) {
         viewModelScope.launch {
             winRepository.deleteWin(win)
-            GlanceAppWidgetManager(context).getGlanceIds(WinsWidget::class.java)
-                .forEach { WinsWidget().update(context, it) }
+            runCatching {
+                GlanceAppWidgetManager(context).getGlanceIds(WinsWidget::class.java)
+                    .forEach { WinsWidget().update(context, it) }
+            }
             onComplete()
         }
     }

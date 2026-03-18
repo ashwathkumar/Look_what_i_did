@@ -119,9 +119,13 @@ private fun WinsWidgetContent(
                 modifier = GlanceModifier.fillMaxSize(),
                 verticalAlignment = Alignment.Vertical.Top
             ) {
-                // ── Header row ────────────────────────────────────────────
+                // ── Header row — green background ─────────────────────────
                 Row(
-                    modifier = GlanceModifier.fillMaxWidth(),
+                    modifier = GlanceModifier
+                        .fillMaxWidth()
+                        .background(themeGreen)
+                        .cornerRadius(10.dp)
+                        .padding(horizontal = 10.dp, vertical = 8.dp),
                     verticalAlignment = Alignment.Vertical.CenterVertically
                 ) {
                     // Timeframe label — tapping toggles the dropdown
@@ -136,7 +140,7 @@ private fun WinsWidgetContent(
                             style = TextStyle(
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = themeGreen
+                                color = ColorProvider(Color.Black)
                             )
                         )
                         Spacer(GlanceModifier.width(4.dp))
@@ -145,26 +149,26 @@ private fun WinsWidgetContent(
                             style = TextStyle(
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = themeGreen
+                                color = ColorProvider(Color.Black)
                             )
                         )
                     }
 
-                    // Quick-add button — opens Add Win form via ActionCallback
+                    // Quick-add button — white pill on green header
                     Box(
                         modifier = GlanceModifier
-                            .background(themeGreen)
+                            .background(ColorProvider(Color(0x33FFFFFF)))
                             .cornerRadius(20.dp)
-                            .padding(horizontal = 14.dp, vertical = 6.dp)
+                            .padding(horizontal = 14.dp, vertical = 4.dp)
                             .clickable(actionRunCallback<LaunchAddWinAction>()),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
                             text = "+",
                             style = TextStyle(
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Medium,
-                                color = ColorProvider(Color.White)
+                                fontSize = 22.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = ColorProvider(Color.Black)
                             )
                         )
                     }

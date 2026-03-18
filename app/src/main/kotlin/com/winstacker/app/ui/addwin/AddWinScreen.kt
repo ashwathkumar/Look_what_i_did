@@ -54,8 +54,9 @@ fun AddWinScreen(
     var showDeleteConfirm by remember { mutableStateOf(false) }
     var titleError by remember { mutableStateOf(false) }
 
-    LaunchedEffect(viewModel.saveSuccess) {
-        viewModel.saveSuccess.collect { onSaved() }
+    val currentOnSaved by rememberUpdatedState(onSaved)
+    LaunchedEffect(Unit) {
+        viewModel.saveSuccess.collect { currentOnSaved() }
     }
 
     // Delete confirmation dialog
