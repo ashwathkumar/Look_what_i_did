@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.outlined.BarChart
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.EmojiEvents
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -29,8 +30,9 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    onAddWin: () -> Unit,
     onNavigateToTimeline: (Timeframe) -> Unit,
+    onNavigateToSettings: () -> Unit,
+    onNavigateToStats: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val wins by viewModel.todayWins.collectAsStateWithLifecycle()
@@ -59,20 +61,15 @@ fun HomeScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = { onNavigateToTimeline(Timeframe.WEEK) }) {
-                        Icon(Icons.Outlined.BarChart, contentDescription = "Timeline")
+                    IconButton(onClick = onNavigateToStats) {
+                        Icon(Icons.Outlined.EmojiEvents, contentDescription = "Stats")
+                    }
+                    IconButton(onClick = onNavigateToSettings) {
+                        Icon(Icons.Outlined.Settings, contentDescription = "Settings")
                     }
                 }
             )
         },
-        floatingActionButton = {
-            ExtendedFloatingActionButton(
-                onClick = onAddWin,
-                icon = { Icon(Icons.Default.Add, contentDescription = null) },
-                text = { Text("Log a Win") },
-                containerColor = MaterialTheme.colorScheme.primary
-            )
-        }
     ) { padding ->
         LazyColumn(
             modifier = Modifier
@@ -99,13 +96,14 @@ fun HomeScreen(
             // Individual wins list
             if (wins.isEmpty()) {
                 item {
-                    EmptyTodayState(onAddWin = onAddWin)
+                    EmptyTodayState()
                 }
             } else {
                 items(wins, key = { it.win.id }) { winWithCat ->
                     WinCard(
                         winWithCategory = winWithCat,
-                        onClick = { /* Navigate to edit */ }
+                        onClick = { /* Navigate to edit if needed from home, or keep disabled */ },
+                        onDelete = { viewModel.deleteWin(winWithCat.win.id) }
                     )
                 }
             }
@@ -173,7 +171,7 @@ private fun CategorySummaryRow(
 }
 
 @Composable
-private fun EmptyTodayState(onAddWin: () -> Unit) {
+private fun EmptyTodayState() {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -192,11 +190,11 @@ private fun EmptyTodayState(onAddWin: () -> Unit) {
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
         )
-        OutlinedButton(onClick = onAddWin) {
-            Icon(Icons.Default.Add, contentDescription = null)
-            Spacer(Modifier.width(8.dp))
-            Text("Log your first win")
-        }
+        Text(
+            text = "Log a win from the + button below!",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.primary
+        )
     }
 }
 

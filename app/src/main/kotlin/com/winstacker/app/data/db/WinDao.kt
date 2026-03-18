@@ -20,6 +20,9 @@ interface WinDao {
     @Delete
     suspend fun deleteWin(win: Win)
 
+    @Query("SELECT * FROM wins WHERE id = :id LIMIT 1")
+    suspend fun getWinById(id: Long): Win?
+
     // ── Queries by date range ─────────────────────────────────────────────────
 
     @Transaction

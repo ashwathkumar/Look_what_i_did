@@ -6,6 +6,8 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.EmojiEvents
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -26,8 +28,9 @@ import com.winstacker.app.viewmodel.*
 fun TimelineScreen(
     initialTimeframe: Timeframe = Timeframe.WEEK,
     initialCategoryFilter: String = "all",
-    onAddWin: () -> Unit,
     onEditWin: (Long) -> Unit,
+    onNavigateToSettings: () -> Unit,
+    onNavigateToStats: () -> Unit,
     viewModel: TimelineViewModel = hiltViewModel()
 ) {
     val timeframe by viewModel.timeframe.collectAsStateWithLifecycle()
@@ -54,14 +57,17 @@ fun TimelineScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Timeline") }
+                title = { Text("Timeline") },
+                actions = {
+                    IconButton(onClick = onNavigateToStats) {
+                        Icon(Icons.Outlined.EmojiEvents, contentDescription = "Stats")
+                    }
+                    IconButton(onClick = onNavigateToSettings) {
+                        Icon(Icons.Outlined.Settings, contentDescription = "Settings")
+                    }
+                }
             )
         },
-        floatingActionButton = {
-            FloatingActionButton(onClick = onAddWin) {
-                Icon(Icons.Default.Add, contentDescription = "Add Win")
-            }
-        }
     ) { padding ->
         Column(
             modifier = Modifier
@@ -100,7 +106,8 @@ fun TimelineScreen(
                     categoryMap = categoryMap,
                     wins = wins,
                     onBack = { viewModel.setCategoryFilter(CategoryFilter.All) },
-                    onEditWin = onEditWin
+                    onEditWin = onEditWin,
+                    onDeleteWin = { viewModel.deleteWin(it) }
                 )
             }
         }
@@ -246,7 +253,8 @@ private fun WinsListContent(
     categoryMap: Map<Long, Category>,
     wins: List<com.winstacker.app.data.model.WinWithCategory>,
     onBack: () -> Unit,
-    onEditWin: (Long) -> Unit
+    onEditWin: (Long) -> Unit,
+    onDeleteWin: (Long) -> Unit
 ) {
     Column {
         // Filter header
@@ -277,7 +285,8 @@ private fun WinsListContent(
                 items(wins, key = { it.win.id }) { winWithCat ->
                     WinCard(
                         winWithCategory = winWithCat,
-                        onClick = { onEditWin(winWithCat.win.id) }
+                        onClick = { onEditWin(winWithCat.win.id) },
+                        onDelete = { onDeleteWin(winWithCat.win.id) }
                     )
                 }
             }

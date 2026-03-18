@@ -7,6 +7,7 @@ import com.winstacker.app.data.model.WinWithCategory
 import com.winstacker.app.data.repository.WinRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
 
@@ -48,5 +49,11 @@ class HomeViewModel @Inject constructor(
 
     fun dismissCelebration() {
         _showCelebration.value = false
+    }
+
+    fun deleteWin(winId: Long) {
+        viewModelScope.launch {
+            winRepository.deleteWinById(winId)
+        }
     }
 }

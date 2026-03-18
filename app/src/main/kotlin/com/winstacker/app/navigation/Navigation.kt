@@ -39,10 +39,11 @@ fun WinsNavHost(
 
         composable(Screen.Home.route) {
             HomeScreen(
-                onAddWin = { navController.navigate(Screen.AddWin.createRoute()) },
                 onNavigateToTimeline = { tf ->
                     navController.navigate(Screen.Timeline.createRoute(timeframe = tf))
-                }
+                },
+                onNavigateToSettings = { navController.navigate(Screen.Settings.route) },
+                onNavigateToStats = { navController.navigate(Screen.Stats.route) }
             )
         }
 
@@ -64,8 +65,9 @@ fun WinsNavHost(
             TimelineScreen(
                 initialTimeframe = runCatching { Timeframe.valueOf(tfName) }.getOrDefault(Timeframe.WEEK),
                 initialCategoryFilter = catFilter,
-                onAddWin = { navController.navigate(Screen.AddWin.createRoute()) },
-                onEditWin = { winId -> navController.navigate(Screen.AddWin.createRoute(winId)) }
+                onEditWin = { winId -> navController.navigate(Screen.AddWin.createRoute(winId)) },
+                onNavigateToSettings = { navController.navigate(Screen.Settings.route) },
+                onNavigateToStats = { navController.navigate(Screen.Stats.route) }
             )
         }
 

@@ -12,11 +12,15 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
+import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
+import androidx.glance.appwidget.updateAll
 
 @HiltViewModel
 class AddWinViewModel @Inject constructor(
     private val winRepository: WinRepository,
-    private val categoryRepository: CategoryRepository
+    private val categoryRepository: CategoryRepository,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     val categories: StateFlow<List<Category>> = categoryRepository
@@ -60,6 +64,7 @@ class AddWinViewModel @Inject constructor(
                     )
                 )
             }
+            com.winstacker.app.widget.WinsWidget().updateAll(context)
             _saveSuccess.emit(Unit)
         }
     }
@@ -67,6 +72,7 @@ class AddWinViewModel @Inject constructor(
     fun deleteWin(win: Win, onComplete: () -> Unit) {
         viewModelScope.launch {
             winRepository.deleteWin(win)
+            com.winstacker.app.widget.WinsWidget().updateAll(context)
             onComplete()
         }
     }

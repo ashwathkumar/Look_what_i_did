@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Wins Tracker</string>
+    <string name="app_name">Look what i did!</string>
     <string name="widget_description">Weekly wins summary widget</string>
     <string name="add_win">Log a Win</string>
     <string name="today">Today</string>

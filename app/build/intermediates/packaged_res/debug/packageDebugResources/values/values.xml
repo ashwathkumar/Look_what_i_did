@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ic_launcher_background">#5C6BC0</color>
+    <string name="add_win">Log a Win</string>
+    <string name="all_time">All Time</string>
+    <string name="app_name">Look what i did!</string>
+    <string name="categories">Categories</string>
+    <string name="settings">Settings</string>
+    <string name="stats">Stats</string>
+    <string name="this_month">This Month</string>
+    <string name="this_week">This Week</string>
+    <string name="this_year">This Year</string>
+    <string name="today">Today</string>
+    <string name="widget_description">Weekly wins summary widget</string>
+    <style name="Theme.WinsTracker" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@android:color/white</item>
+    </style>
+    <style name="Theme.WinsTracker.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">#5C6BC0</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <item name="postSplashScreenTheme">@style/Theme.WinsTracker</item>
+    </style>
+</resources>

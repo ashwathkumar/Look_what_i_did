@@ -10,6 +10,7 @@ import com.winstacker.app.data.repository.WinRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.temporal.TemporalAdjusters
@@ -96,6 +97,12 @@ class TimelineViewModel @Inject constructor(
             Timeframe.ALL_TIME -> {
                 0L to Long.MAX_VALUE / 2
             }
+        }
+    }
+
+    fun deleteWin(winId: Long) {
+        viewModelScope.launch {
+            winRepository.deleteWinById(winId)
         }
     }
 }

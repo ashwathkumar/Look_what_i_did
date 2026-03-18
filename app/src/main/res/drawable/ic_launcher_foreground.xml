@@ -24,10 +24,7 @@
         android:fillColor="#FFFFFF"
         android:pathData="M50,68 L50,76 L44,78 L64,78 L58,76 L58,68 Z" />
     <!-- Trophy base -->
-    <rect
+    <path
         android:fillColor="#FFFFFF"
-        android:left="42"
-        android:top="78"
-        android:right="66"
-        android:bottom="82" />
+        android:pathData="M42,78 L66,78 L66,82 L42,82 Z" />
 </vector>

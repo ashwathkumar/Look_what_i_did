@@ -1,0 +1,19 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.winstacker.app-mergeDebugResources-74:/values-v30/values-v30.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\Ashwath\\.gradle\\caches\\8.9\\transforms\\982331d8c49a3e6dc8159d9c6decd646\\transformed\\material3-release\\res\\values-v30\\values-v30.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "72",
+                        "endOffsets": "123"
+                    }
+                }
+            ]
+        }
+    ]
+}

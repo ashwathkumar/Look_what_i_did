@@ -65,6 +65,16 @@ class MainActivity : ComponentActivity() {
                     categoryFilter = catFilter
                 )
             }
+            deepLink?.startsWith("winstacker://timeline") == true -> {
+                val uri = android.net.Uri.parse(deepLink)
+                val tfName = uri.getQueryParameter("timeframe") ?: "WEEK"
+                val catFilter = uri.getQueryParameter("categoryFilter") ?: "all"
+                val tf = runCatching { com.winstacker.app.viewmodel.Timeframe.valueOf(tfName) }.getOrDefault(com.winstacker.app.viewmodel.Timeframe.WEEK)
+                Screen.Timeline.createRoute(
+                    timeframe = tf,
+                    categoryFilter = catFilter
+                )
+            }
             else -> null
         }
     }
@@ -80,27 +90,21 @@ data class BottomNavItem(
 val bottomNavItems = listOf(
     BottomNavItem(
         route = Screen.Home.route,
-        label = "Today",
+        label = "Home",
         selectedIcon = Icons.Filled.Home,
         unselectedIcon = Icons.Outlined.Home
+    ),
+    BottomNavItem(
+        route = Screen.AddWin.createRoute(),
+        label = "Log a Win",
+        selectedIcon = Icons.Filled.AddCircle,
+        unselectedIcon = Icons.Outlined.AddCircleOutline
     ),
     BottomNavItem(
         route = Screen.Timeline.createRoute(),
         label = "Timeline",
         selectedIcon = Icons.Filled.BarChart,
         unselectedIcon = Icons.Outlined.BarChart
-    ),
-    BottomNavItem(
-        route = Screen.Stats.route,
-        label = "Stats",
-        selectedIcon = Icons.Filled.EmojiEvents,
-        unselectedIcon = Icons.Outlined.EmojiEvents
-    ),
-    BottomNavItem(
-        route = Screen.Settings.route,
-        label = "Settings",
-        selectedIcon = Icons.Filled.Settings,
-        unselectedIcon = Icons.Outlined.Settings
     )
 )
 
@@ -113,8 +117,7 @@ fun WinsTrackerApp(startRoute: String? = null) {
     // Routes where bottom nav is visible
     val bottomNavRoutes = setOf(
         Screen.Home.route,
-        Screen.Stats.route,
-        Screen.Settings.route
+        Screen.Timeline.createRoute().substringBefore("?")
     )
 
     val showBottomBar = currentDestination?.route?.let { route ->

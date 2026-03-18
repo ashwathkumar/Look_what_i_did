@@ -38,6 +38,17 @@ class WinRepository @Inject constructor(
         decrementAggregatedStats(win)
     }
 
+    suspend fun getWinById(id: Long): Win? {
+        return winDao.getWinById(id)
+    }
+
+    suspend fun deleteWinById(id: Long) {
+        val win = winDao.getWinById(id)
+        if (win != null) {
+            deleteWin(win)
+        }
+    }
+
     // ── Queries ───────────────────────────────────────────────────────────────
 
     fun getWinsInRange(startDay: Long, endDay: Long): Flow<List<WinWithCategory>> =
