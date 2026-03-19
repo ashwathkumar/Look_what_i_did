@@ -95,7 +95,7 @@ class TimelineViewModel @Inject constructor(
                 start.toEpochDay() to end.toEpochDay()
             }
             Timeframe.ALL_TIME -> {
-                0L to Long.MAX_VALUE / 2
+                0L to LocalDate.of(9999, 12, 31).toEpochDay()
             }
         }
     }

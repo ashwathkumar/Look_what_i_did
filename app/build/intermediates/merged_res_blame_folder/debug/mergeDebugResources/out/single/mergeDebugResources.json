@@ -1,54 +1,122 @@
 [
     {
-        "merged": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9\\com.winstacker.app-debug-76:\\xml_wins_widget_info.xml.flat",
-        "source": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9\\com.winstacker.app-main-78:\\xml\\wins_widget_info.xml"
+        "merged": "com.winstacker.app-debug-76:/mipmap-hdpi_ic_launcher_round.webp.flat",
+        "source": "com.winstacker.app-main-78:/mipmap-hdpi/ic_launcher_round.webp"
     },
     {
-        "merged": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9\\com.winstacker.app-debug-76:\\mipmap-hdpi_ic_launcher.xml.flat",
-        "source": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9\\com.winstacker.app-main-78:\\mipmap-hdpi\\ic_launcher.xml"
+        "merged": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9-rc-2\\com.winstacker.app-debug-76:\\mipmap-xxhdpi_ic_launcher_round.xml.flat",
+        "source": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9-rc-2\\com.winstacker.app-main-78:\\mipmap-xxhdpi\\ic_launcher_round.xml"
     },
     {
-        "merged": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9\\com.winstacker.app-debug-76:\\mipmap-mdpi_ic_launcher_round.xml.flat",
-        "source": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9\\com.winstacker.app-main-78:\\mipmap-mdpi\\ic_launcher_round.xml"
+        "merged": "com.winstacker.app-debug-76:/mipmap-xhdpi_ic_launcher_round.webp.flat",
+        "source": "com.winstacker.app-main-78:/mipmap-xhdpi/ic_launcher_round.webp"
     },
     {
-        "merged": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9\\com.winstacker.app-debug-76:\\mipmap-mdpi_ic_launcher.xml.flat",
-        "source": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9\\com.winstacker.app-main-78:\\mipmap-mdpi\\ic_launcher.xml"
+        "merged": "com.winstacker.app-debug-76:/mipmap-xxhdpi_ic_launcher_foreground.webp.flat",
+        "source": "com.winstacker.app-main-78:/mipmap-xxhdpi/ic_launcher_foreground.webp"
     },
     {
-        "merged": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9\\com.winstacker.app-debug-76:\\mipmap-xxhdpi_ic_launcher_round.xml.flat",
-        "source": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9\\com.winstacker.app-main-78:\\mipmap-xxhdpi\\ic_launcher_round.xml"
+        "merged": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9-rc-2\\com.winstacker.app-debug-76:\\mipmap-hdpi_ic_launcher_round.xml.flat",
+        "source": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9-rc-2\\com.winstacker.app-main-78:\\mipmap-hdpi\\ic_launcher_round.xml"
     },
     {
-        "merged": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9\\com.winstacker.app-debug-76:\\mipmap-xxhdpi_ic_launcher.xml.flat",
-        "source": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9\\com.winstacker.app-main-78:\\mipmap-xxhdpi\\ic_launcher.xml"
+        "merged": "com.winstacker.app-debug-76:/mipmap-mdpi_ic_launcher_round.webp.flat",
+        "source": "com.winstacker.app-main-78:/mipmap-mdpi/ic_launcher_round.webp"
     },
     {
-        "merged": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9\\com.winstacker.app-debug-76:\\mipmap-xxxhdpi_ic_launcher_round.xml.flat",
-        "source": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9\\com.winstacker.app-main-78:\\mipmap-xxxhdpi\\ic_launcher_round.xml"
+        "merged": "com.winstacker.app-debug-76:/mipmap-hdpi_ic_launcher_foreground.webp.flat",
+        "source": "com.winstacker.app-main-78:/mipmap-hdpi/ic_launcher_foreground.webp"
     },
     {
-        "merged": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9\\com.winstacker.app-debug-76:\\mipmap-hdpi_ic_launcher_round.xml.flat",
-        "source": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9\\com.winstacker.app-main-78:\\mipmap-hdpi\\ic_launcher_round.xml"
+        "merged": "com.winstacker.app-debug-76:/mipmap-xhdpi_ic_launcher.webp.flat",
+        "source": "com.winstacker.app-main-78:/mipmap-xhdpi/ic_launcher.webp"
     },
     {
-        "merged": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9\\com.winstacker.app-debug-76:\\mipmap-xhdpi_ic_launcher_round.xml.flat",
-        "source": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9\\com.winstacker.app-main-78:\\mipmap-xhdpi\\ic_launcher_round.xml"
+        "merged": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9-rc-2\\com.winstacker.app-debug-76:\\mipmap-mdpi_ic_launcher_round.xml.flat",
+        "source": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9-rc-2\\com.winstacker.app-main-78:\\mipmap-mdpi\\ic_launcher_round.xml"
     },
     {
-        "merged": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9\\com.winstacker.app-debug-76:\\drawable_ic_launcher_foreground.xml.flat",
-        "source": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9\\com.winstacker.app-main-78:\\drawable\\ic_launcher_foreground.xml"
+        "merged": "com.winstacker.app-debug-76:/mipmap-xxhdpi_ic_launcher.webp.flat",
+        "source": "com.winstacker.app-main-78:/mipmap-xxhdpi/ic_launcher.webp"
     },
     {
-        "merged": "com.winstacker.app-debug-76:/drawable_ic_launcher_foreground.xml.flat",
-        "source": "com.winstacker.app-main-78:/drawable/ic_launcher_foreground.xml"
+        "merged": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9-rc-2\\com.winstacker.app-debug-76:\\mipmap-xxxhdpi_ic_launcher_round.xml.flat",
+        "source": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9-rc-2\\com.winstacker.app-main-78:\\mipmap-xxxhdpi\\ic_launcher_round.xml"
     },
     {
-        "merged": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9\\com.winstacker.app-debug-76:\\mipmap-xhdpi_ic_launcher.xml.flat",
-        "source": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9\\com.winstacker.app-main-78:\\mipmap-xhdpi\\ic_launcher.xml"
+        "merged": "com.winstacker.app-debug-76:/mipmap-xxxhdpi_ic_launcher_foreground.webp.flat",
+        "source": "com.winstacker.app-main-78:/mipmap-xxxhdpi/ic_launcher_foreground.webp"
     },
     {
-        "merged": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9\\com.winstacker.app-debug-76:\\mipmap-xxxhdpi_ic_launcher.xml.flat",
-        "source": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9\\com.winstacker.app-main-78:\\mipmap-xxxhdpi\\ic_launcher.xml"
+        "merged": "com.winstacker.app-debug-76:/mipmap-hdpi_ic_launcher.webp.flat",
+        "source": "com.winstacker.app-main-78:/mipmap-hdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.winstacker.app-debug-76:/mipmap-xhdpi_ic_launcher_foreground.webp.flat",
+        "source": "com.winstacker.app-main-78:/mipmap-xhdpi/ic_launcher_foreground.webp"
+    },
+    {
+        "merged": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9-rc-2\\com.winstacker.app-debug-76:\\xml_wins_widget_info.xml.flat",
+        "source": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9-rc-2\\com.winstacker.app-main-78:\\xml\\wins_widget_info.xml"
+    },
+    {
+        "merged": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9-rc-2\\com.winstacker.app-debug-76:\\mipmap-xxhdpi_ic_launcher.xml.flat",
+        "source": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9-rc-2\\com.winstacker.app-main-78:\\mipmap-xxhdpi\\ic_launcher.xml"
+    },
+    {
+        "merged": "com.winstacker.app-debug-76:/mipmap-xxxhdpi_ic_launcher.webp.flat",
+        "source": "com.winstacker.app-main-78:/mipmap-xxxhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.winstacker.app-debug-76:/mipmap-mdpi_ic_launcher.webp.flat",
+        "source": "com.winstacker.app-main-78:/mipmap-mdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.winstacker.app-debug-76:/mipmap-xxhdpi_ic_launcher_round.webp.flat",
+        "source": "com.winstacker.app-main-78:/mipmap-xxhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.winstacker.app-debug-76:/mipmap-xxxhdpi_ic_launcher_round.webp.flat",
+        "source": "com.winstacker.app-main-78:/mipmap-xxxhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9-rc-2\\com.winstacker.app-debug-76:\\drawable_ic_launcher_foreground.xml.flat",
+        "source": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9-rc-2\\com.winstacker.app-main-78:\\drawable\\ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9-rc-2\\com.winstacker.app-debug-76:\\mipmap-hdpi_ic_launcher.xml.flat",
+        "source": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9-rc-2\\com.winstacker.app-main-78:\\mipmap-hdpi\\ic_launcher.xml"
+    },
+    {
+        "merged": "com.winstacker.app-debug-76:/drawable_ic_launcher_background.xml.flat",
+        "source": "com.winstacker.app-main-78:/drawable/ic_launcher_background.xml"
+    },
+    {
+        "merged": "com.winstacker.app-debug-76:/mipmap-mdpi_ic_launcher_foreground.webp.flat",
+        "source": "com.winstacker.app-main-78:/mipmap-mdpi/ic_launcher_foreground.webp"
+    },
+    {
+        "merged": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9-rc-2\\com.winstacker.app-debug-76:\\mipmap-xhdpi_ic_launcher.xml.flat",
+        "source": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9-rc-2\\com.winstacker.app-main-78:\\mipmap-xhdpi\\ic_launcher.xml"
+    },
+    {
+        "merged": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9-rc-2\\com.winstacker.app-debug-76:\\mipmap-xhdpi_ic_launcher_round.xml.flat",
+        "source": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9-rc-2\\com.winstacker.app-main-78:\\mipmap-xhdpi\\ic_launcher_round.xml"
+    },
+    {
+        "merged": "com.winstacker.app-debug-76:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "com.winstacker.app-main-78:/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9-rc-2\\com.winstacker.app-debug-76:\\mipmap-xxxhdpi_ic_launcher.xml.flat",
+        "source": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9-rc-2\\com.winstacker.app-main-78:\\mipmap-xxxhdpi\\ic_launcher.xml"
+    },
+    {
+        "merged": "com.winstacker.app-debug-76:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "com.winstacker.app-main-78:/mipmap-anydpi-v26/ic_launcher_round.xml"
+    },
+    {
+        "merged": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9-rc-2\\com.winstacker.app-debug-76:\\mipmap-mdpi_ic_launcher.xml.flat",
+        "source": "C:\\Users\\Ashwath\\.gradle\\daemon\\8.9-rc-2\\com.winstacker.app-main-78:\\mipmap-mdpi\\ic_launcher.xml"
     }
 ]

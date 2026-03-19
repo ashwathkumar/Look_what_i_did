@@ -776,6 +776,7 @@ int drawable ic_call_answer_video 0x7f07007a
 int drawable ic_call_answer_video_low 0x7f07007b
 int drawable ic_call_decline 0x7f07007c
 int drawable ic_call_decline_low 0x7f07007d
+int drawable ic_launcher_background 0x7f070090
 int drawable ic_launcher_foreground 0x7f07007e
 int drawable icon_background 0x7f07007f
 int drawable notification_action_background 0x7f070080
@@ -2324,6 +2325,7 @@ int layout size_wrap_wrap 0x7f0b04b0
 int layout splash_screen_view 0x7f0b04b1
 int layout support_simple_spinner_dropdown_item 0x7f0b04b2
 int mipmap ic_launcher 0x7f0c0000
+int mipmap ic_launcher_foreground 0x7f0c0002
 int mipmap ic_launcher_round 0x7f0c0001
 int raw glance_appwidget_keep 0x7f0d0000
 int string abc_action_bar_home_description 0x7f0e0000

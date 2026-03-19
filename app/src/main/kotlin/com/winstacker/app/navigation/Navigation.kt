@@ -82,11 +82,19 @@ fun WinsNavHost(
             )
         ) { backStack ->
             val winId = backStack.arguments?.getLong("winId") ?: -1L
+            // When AddWin is the start destination (e.g. launched from widget deep-link),
+            // popBackStack returns false because there is nothing behind it — navigate to
+            // Home instead so the user is never left on a blank screen.
+            fun navigateBack() {
+                if (!navController.popBackStack()) {
+                    navController.navigate(Screen.Home.route)
+                }
+            }
             AddWinScreen(
                 winId = if (winId == -1L) null else winId,
-                onSaved = { navController.popBackStack() },
-                onDeleted = { navController.popBackStack() },
-                onBack = { navController.popBackStack() }
+                onSaved = { navigateBack() },
+                onDeleted = { navigateBack() },
+                onBack = { navigateBack() }
             )
         }
 

@@ -42,30 +42,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-            <!-- Deep link: open Add Win screen -->
+            <!-- Deep link used by widget tap to open This Week timeline -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
 
                 <data
-                    android:host="add"
-                    android:scheme="winstacker" />
-            </intent-filter>
-
-            <!-- Deep link: open Weekly view with optional category filter -->
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <data
-                    android:host="weekly"
+                    android:host="timeline"
                     android:scheme="winstacker" />
             </intent-filter>
         </activity>
 
-        <!-- Widget -->
+        <!-- Weekly wins widget -->
         <receiver
             android:name="com.winstacker.app.widget.WinsWidgetReceiver"
             android:exported="true" >
