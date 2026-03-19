@@ -82,12 +82,11 @@ fun WinsNavHost(
             )
         ) { backStack ->
             val winId = backStack.arguments?.getLong("winId") ?: -1L
-            // When AddWin is the start destination (e.g. launched from widget deep-link),
-            // popBackStack returns false because there is nothing behind it — navigate to
-            // Home instead so the user is never left on a blank screen.
+            // When launched via deep link, AddWin may be the root with no back stack.
+            // Fall back to Home so popBackStack() never silently fails.
             fun navigateBack() {
                 if (!navController.popBackStack()) {
-                    navController.navigate(Screen.Home.route)
+                    navController.navigate(Screen.Home.route) { launchSingleTop = true }
                 }
             }
             AddWinScreen(
