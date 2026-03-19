@@ -135,19 +135,26 @@ class WinRepository @Inject constructor(
 
     private suspend fun updateAggregatedStats(win: Win) {
         val yearMonth = epochDayToYearMonth(win.dateEpochDay)
-        val existing = statsDao.getTotalForMonth(yearMonth) ?: 0
-        statsDao.upsert(AggregatedStats(yearMonth = "$yearMonth-null", categoryId = null, winCount = existing + 1))
+        // Total row uses the plain "YYYY-MM" key so getTotalForMonth can find it.
+        val existingTotal = statsDao.getTotalForMonth(yearMonth) ?: 0
+        statsDao.upsert(AggregatedStats(yearMonth = yearMonth, categoryId = null, winCount = existingTotal + 1))
         win.categoryId?.let { catId ->
-            val key = "$yearMonth-$catId"
-            statsDao.upsert(AggregatedStats(yearMonth = key, categoryId = catId, winCount = existing + 1))
+            // Category row uses "YYYY-MM-<id>" key; look up its own count, not the total.
+            val catKey = "$yearMonth-$catId"
+            val existingCat = statsDao.getCountForKey(catKey) ?: 0
+            statsDao.upsert(AggregatedStats(yearMonth = catKey, categoryId = catId, winCount = existingCat + 1))
         }
     }
 
     private suspend fun decrementAggregatedStats(win: Win) {
         val yearMonth = epochDayToYearMonth(win.dateEpochDay)
-        val existing = statsDao.getTotalForMonth(yearMonth) ?: 1
-        val newCount = maxOf(0, existing - 1)
-        statsDao.upsert(AggregatedStats(yearMonth = "$yearMonth-null", categoryId = null, winCount = newCount))
+        val existingTotal = statsDao.getTotalForMonth(yearMonth) ?: 1
+        statsDao.upsert(AggregatedStats(yearMonth = yearMonth, categoryId = null, winCount = maxOf(0, existingTotal - 1)))
+        win.categoryId?.let { catId ->
+            val catKey = "$yearMonth-$catId"
+            val existingCat = statsDao.getCountForKey(catKey) ?: 1
+            statsDao.upsert(AggregatedStats(yearMonth = catKey, categoryId = catId, winCount = maxOf(0, existingCat - 1)))
+        }
     }
 
     private fun epochDayToYearMonth(epochDay: Long): String {

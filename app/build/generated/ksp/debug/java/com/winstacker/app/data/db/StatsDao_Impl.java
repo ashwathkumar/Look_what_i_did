@@ -122,7 +122,7 @@ public final class StatsDao_Impl implements StatsDao {
   @Override
   public Object getTotalForMonth(final String yearMonth,
       final Continuation<? super Integer> $completion) {
-    final String _sql = "SELECT SUM(winCount) FROM aggregated_stats WHERE yearMonth = ? AND categoryId IS NULL";
+    final String _sql = "SELECT winCount FROM aggregated_stats WHERE yearMonth = ? AND categoryId IS NULL LIMIT 1";
     final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
     int _argIndex = 1;
     _statement.bindString(_argIndex, yearMonth);
@@ -135,13 +135,43 @@ public final class StatsDao_Impl implements StatsDao {
         try {
           final Integer _result;
           if (_cursor.moveToFirst()) {
-            final Integer _tmp;
             if (_cursor.isNull(0)) {
-              _tmp = null;
+              _result = null;
             } else {
-              _tmp = _cursor.getInt(0);
+              _result = _cursor.getInt(0);
             }
-            _result = _tmp;
+          } else {
+            _result = null;
+          }
+          return _result;
+        } finally {
+          _cursor.close();
+          _statement.release();
+        }
+      }
+    }, $completion);
+  }
+
+  @Override
+  public Object getCountForKey(final String key, final Continuation<? super Integer> $completion) {
+    final String _sql = "SELECT winCount FROM aggregated_stats WHERE yearMonth = ? LIMIT 1";
+    final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
+    int _argIndex = 1;
+    _statement.bindString(_argIndex, key);
+    final CancellationSignal _cancellationSignal = DBUtil.createCancellationSignal();
+    return CoroutinesRoom.execute(__db, false, _cancellationSignal, new Callable<Integer>() {
+      @Override
+      @Nullable
+      public Integer call() throws Exception {
+        final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
+        try {
+          final Integer _result;
+          if (_cursor.moveToFirst()) {
+            if (_cursor.isNull(0)) {
+              _result = null;
+            } else {
+              _result = _cursor.getInt(0);
+            }
           } else {
             _result = null;
           }

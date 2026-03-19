@@ -2,6 +2,7 @@ package com.winstacker.app.ui.home
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.EmojiEvents
@@ -16,6 +17,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.winstacker.app.data.model.Category
+import com.winstacker.app.data.model.CategoryCount
+import com.winstacker.app.ui.common.CategoryChip
 import com.winstacker.app.ui.common.WinCard
 import com.winstacker.app.viewmodel.HomeViewModel
 import com.winstacker.app.viewmodel.Timeframe
@@ -35,6 +39,7 @@ fun HomeScreen(
     val wins by viewModel.todayWins.collectAsStateWithLifecycle()
     val categoryCounts by viewModel.todayCategoryCounts.collectAsStateWithLifecycle()
     val winCount by viewModel.todayWinCount.collectAsStateWithLifecycle()
+    val allCategories by viewModel.allCategories.collectAsStateWithLifecycle()
     val showCelebration by viewModel.showCelebration.collectAsStateWithLifecycle()
 
     if (showCelebration) {
@@ -85,6 +90,7 @@ fun HomeScreen(
                 item {
                     CategorySummaryRow(
                         categoryCounts = categoryCounts,
+                        allCategories = allCategories,
                         onCategoryClick = { /* Could drill down */ }
                     )
                 }
@@ -154,17 +160,32 @@ private fun WinCountHeader(count: Int) {
 
 @Composable
 private fun CategorySummaryRow(
-    categoryCounts: List<com.winstacker.app.data.model.CategoryCount>,
+    categoryCounts: List<CategoryCount>,
+    allCategories: List<Category>,
     onCategoryClick: (Long?) -> Unit
 ) {
-    Text(
-        text = "By category",
-        style = MaterialTheme.typography.labelMedium,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-        modifier = Modifier.padding(bottom = 4.dp)
-    )
-    // Just display count chips (categories resolved in parent)
-    // This is simplified — in real use, we'd look up category details
+    val categoryMap = allCategories.associateBy { it.id }
+
+    Column {
+        Text(
+            text = "By category",
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(bottom = 6.dp)
+        )
+        LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            items(categoryCounts) { catCount ->
+                val category = catCount.categoryId?.let { categoryMap[it] }
+                if (category != null) {
+                    CategoryChip(
+                        category = category,
+                        count = catCount.count,
+                        onClick = { onCategoryClick(catCount.categoryId) }
+                    )
+                }
+            }
+        }
+    }
 }
 
 @Composable
@@ -197,7 +218,10 @@ private fun EmptyTodayState() {
 
 @Composable
 private fun CelebrationDialog(onDismiss: () -> Unit) {
-    LaunchedEffect(Unit) {
+    // Key on true (a stable non-Unit value) so that re-entering composition
+    // (e.g. after a config change) restarts the auto-dismiss timer correctly
+    // instead of potentially stacking multiple timers.
+    LaunchedEffect(true) {
         kotlinx.coroutines.delay(2500)
         onDismiss()
     }

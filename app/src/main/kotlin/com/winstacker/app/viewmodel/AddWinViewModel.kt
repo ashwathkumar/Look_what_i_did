@@ -3,15 +3,17 @@ package com.winstacker.app.viewmodel
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.glance.appwidget.GlanceAppWidgetManager
 import com.winstacker.app.data.model.Category
 import com.winstacker.app.data.model.Win
 import com.winstacker.app.data.model.WinSource
 import com.winstacker.app.data.repository.CategoryRepository
 import com.winstacker.app.data.repository.WinRepository
-import androidx.glance.appwidget.GlanceAppWidgetManager
 import com.winstacker.app.widget.WinsWidget
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -33,6 +35,8 @@ class AddWinViewModel @Inject constructor(
 
     private val _saveSuccess = MutableSharedFlow<Unit>()
     val saveSuccess: SharedFlow<Unit> = _saveSuccess.asSharedFlow()
+
+    private var widgetUpdateJob: Job? = null
 
     fun loadWin(id: Long) {
         viewModelScope.launch {
@@ -74,22 +78,32 @@ class AddWinViewModel @Inject constructor(
                     )
                 )
             }
-            runCatching {
-                GlanceAppWidgetManager(context).getGlanceIds(WinsWidget::class.java)
-                    .forEach { WinsWidget().update(context, it) }
-            }
             _saveSuccess.emit(Unit)
+            scheduleWidgetUpdate()
         }
     }
 
     fun deleteWin(win: Win, onComplete: () -> Unit) {
         viewModelScope.launch {
             winRepository.deleteWin(win)
+            // Update widget before navigating — onComplete() clears viewModelScope,
+            // so we can't defer this with a delay the way saves do.
             runCatching {
                 GlanceAppWidgetManager(context).getGlanceIds(WinsWidget::class.java)
                     .forEach { WinsWidget().update(context, it) }
             }
             onComplete()
+        }
+    }
+
+    private fun scheduleWidgetUpdate() {
+        widgetUpdateJob?.cancel()
+        widgetUpdateJob = viewModelScope.launch {
+            delay(300)
+            runCatching {
+                GlanceAppWidgetManager(context).getGlanceIds(WinsWidget::class.java)
+                    .forEach { WinsWidget().update(context, it) }
+            }
         }
     }
 }

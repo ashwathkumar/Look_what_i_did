@@ -413,35 +413,35 @@ public final class DaggerWinsTrackerApplication_HiltComponents_SingletonC {
 
     @IdentifierNameString
     private static final class LazyClassKeyProvider {
-      static String com_winstacker_app_viewmodel_AddWinViewModel = "com.winstacker.app.viewmodel.AddWinViewModel";
+      static String com_winstacker_app_viewmodel_CategoriesViewModel = "com.winstacker.app.viewmodel.CategoriesViewModel";
 
       static String com_winstacker_app_viewmodel_SettingsViewModel = "com.winstacker.app.viewmodel.SettingsViewModel";
 
-      static String com_winstacker_app_viewmodel_CategoriesViewModel = "com.winstacker.app.viewmodel.CategoriesViewModel";
-
       static String com_winstacker_app_viewmodel_HomeViewModel = "com.winstacker.app.viewmodel.HomeViewModel";
-
-      static String com_winstacker_app_viewmodel_StatsViewModel = "com.winstacker.app.viewmodel.StatsViewModel";
 
       static String com_winstacker_app_viewmodel_TimelineViewModel = "com.winstacker.app.viewmodel.TimelineViewModel";
 
-      @KeepFieldType
-      AddWinViewModel com_winstacker_app_viewmodel_AddWinViewModel2;
+      static String com_winstacker_app_viewmodel_AddWinViewModel = "com.winstacker.app.viewmodel.AddWinViewModel";
 
-      @KeepFieldType
-      SettingsViewModel com_winstacker_app_viewmodel_SettingsViewModel2;
+      static String com_winstacker_app_viewmodel_StatsViewModel = "com.winstacker.app.viewmodel.StatsViewModel";
 
       @KeepFieldType
       CategoriesViewModel com_winstacker_app_viewmodel_CategoriesViewModel2;
 
       @KeepFieldType
+      SettingsViewModel com_winstacker_app_viewmodel_SettingsViewModel2;
+
+      @KeepFieldType
       HomeViewModel com_winstacker_app_viewmodel_HomeViewModel2;
 
       @KeepFieldType
-      StatsViewModel com_winstacker_app_viewmodel_StatsViewModel2;
+      TimelineViewModel com_winstacker_app_viewmodel_TimelineViewModel2;
 
       @KeepFieldType
-      TimelineViewModel com_winstacker_app_viewmodel_TimelineViewModel2;
+      AddWinViewModel com_winstacker_app_viewmodel_AddWinViewModel2;
+
+      @KeepFieldType
+      StatsViewModel com_winstacker_app_viewmodel_StatsViewModel2;
     }
   }
 
@@ -497,35 +497,35 @@ public final class DaggerWinsTrackerApplication_HiltComponents_SingletonC {
 
     @IdentifierNameString
     private static final class LazyClassKeyProvider {
-      static String com_winstacker_app_viewmodel_AddWinViewModel = "com.winstacker.app.viewmodel.AddWinViewModel";
-
       static String com_winstacker_app_viewmodel_SettingsViewModel = "com.winstacker.app.viewmodel.SettingsViewModel";
-
-      static String com_winstacker_app_viewmodel_HomeViewModel = "com.winstacker.app.viewmodel.HomeViewModel";
-
-      static String com_winstacker_app_viewmodel_CategoriesViewModel = "com.winstacker.app.viewmodel.CategoriesViewModel";
-
-      static String com_winstacker_app_viewmodel_TimelineViewModel = "com.winstacker.app.viewmodel.TimelineViewModel";
 
       static String com_winstacker_app_viewmodel_StatsViewModel = "com.winstacker.app.viewmodel.StatsViewModel";
 
-      @KeepFieldType
-      AddWinViewModel com_winstacker_app_viewmodel_AddWinViewModel2;
+      static String com_winstacker_app_viewmodel_AddWinViewModel = "com.winstacker.app.viewmodel.AddWinViewModel";
+
+      static String com_winstacker_app_viewmodel_CategoriesViewModel = "com.winstacker.app.viewmodel.CategoriesViewModel";
+
+      static String com_winstacker_app_viewmodel_HomeViewModel = "com.winstacker.app.viewmodel.HomeViewModel";
+
+      static String com_winstacker_app_viewmodel_TimelineViewModel = "com.winstacker.app.viewmodel.TimelineViewModel";
 
       @KeepFieldType
       SettingsViewModel com_winstacker_app_viewmodel_SettingsViewModel2;
 
       @KeepFieldType
-      HomeViewModel com_winstacker_app_viewmodel_HomeViewModel2;
+      StatsViewModel com_winstacker_app_viewmodel_StatsViewModel2;
+
+      @KeepFieldType
+      AddWinViewModel com_winstacker_app_viewmodel_AddWinViewModel2;
 
       @KeepFieldType
       CategoriesViewModel com_winstacker_app_viewmodel_CategoriesViewModel2;
 
       @KeepFieldType
-      TimelineViewModel com_winstacker_app_viewmodel_TimelineViewModel2;
+      HomeViewModel com_winstacker_app_viewmodel_HomeViewModel2;
 
       @KeepFieldType
-      StatsViewModel com_winstacker_app_viewmodel_StatsViewModel2;
+      TimelineViewModel com_winstacker_app_viewmodel_TimelineViewModel2;
     }
 
     private static final class SwitchingProvider<T> implements Provider<T> {
@@ -556,7 +556,7 @@ public final class DaggerWinsTrackerApplication_HiltComponents_SingletonC {
           return (T) new CategoriesViewModel(singletonCImpl.categoryRepositoryProvider.get());
 
           case 2: // com.winstacker.app.viewmodel.HomeViewModel 
-          return (T) new HomeViewModel(singletonCImpl.winRepositoryProvider.get());
+          return (T) new HomeViewModel(singletonCImpl.winRepositoryProvider.get(), singletonCImpl.categoryRepositoryProvider.get());
 
           case 3: // com.winstacker.app.viewmodel.SettingsViewModel 
           return (T) new SettingsViewModel(singletonCImpl.userPreferencesRepositoryProvider.get());
@@ -692,11 +692,6 @@ public final class DaggerWinsTrackerApplication_HiltComponents_SingletonC {
     @Override
     public WinRepository winRepository() {
       return winRepositoryProvider.get();
-    }
-
-    @Override
-    public CategoryRepository categoryRepository() {
-      return categoryRepositoryProvider.get();
     }
 
     @Override
