@@ -6,7 +6,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Lock
@@ -87,7 +87,7 @@ fun CategoriesScreen(
                 title = { Text("Categories") },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 }
             )
@@ -312,7 +312,7 @@ private fun ColorSwatch(
         modifier = Modifier.size(32.dp),
         shape = MaterialTheme.shapes.small,
         color = color,
-        border = if (selected) ButtonDefaults.outlinedButtonBorder else null,
+        border = if (selected) ButtonDefaults.outlinedButtonBorder(enabled = true) else null,
         onClick = onClick
     ) {}
 }

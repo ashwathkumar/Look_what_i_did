@@ -8,7 +8,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.filled.TrendingUp
+import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -100,7 +100,7 @@ fun StatsScreen(
                     WinCountRow(
                         period = "This Week",
                         count = uiState.winsThisWeek,
-                        icon = Icons.Default.TrendingUp
+                        icon = Icons.AutoMirrored.Filled.TrendingUp
                     )
                     WinCountRow(
                         period = "This Month",
