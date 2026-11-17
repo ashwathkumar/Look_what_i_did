@@ -1,27 +1,24 @@
 package com.winstacker.app.ui.theme
 
 import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.*
+import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import com.winstacker.app.data.repository.AppAccent
 
-private val LightColorScheme = lightColorScheme(
-    primary = Primary,
-    onPrimary = Color.White,
-    primaryContainer = PrimaryContainer,
-    onPrimaryContainer = Color(0xFF1A237E),
-    secondary = Secondary,
-    onSecondary = Color.White,
-    secondaryContainer = SecondaryContainer,
-    onSecondaryContainer = Color(0xFF00352F),
-    tertiary = Tertiary,
-    onTertiary = Color.White,
-    tertiaryContainer = TertiaryContainer,
+private val BaseLightColorScheme = lightColorScheme(
     surface = Surface,
     onSurface = Color(0xFF1C1B1F),
     surfaceVariant = SurfaceVariant,
@@ -33,18 +30,7 @@ private val LightColorScheme = lightColorScheme(
     onError = Color.White
 )
 
-private val DarkColorScheme = darkColorScheme(
-    primary = Color(0xFF81C784),
-    onPrimary = Color(0xFF003314),
-    primaryContainer = Color(0xFF20512F),
-    onPrimaryContainer = Color(0xFFC8E6C9),
-    secondary = Color(0xFF80CBC4),
-    onSecondary = Color(0xFF00352F),
-    secondaryContainer = Color(0xFF00695C),
-    onSecondaryContainer = Color(0xFFE0F2F1),
-    tertiary = Color(0xFFFF8A65),
-    onTertiary = Color(0xFF5D1A00),
-    tertiaryContainer = Color(0xFFBF360C),
+private val BaseDarkColorScheme = darkColorScheme(
     surface = SurfaceDark,
     onSurface = Color(0xFFE6E1E5),
     surfaceVariant = SurfaceVariantDark,
@@ -56,12 +42,51 @@ private val DarkColorScheme = darkColorScheme(
     onError = Color(0xFF690020)
 )
 
+/** True when the platform can derive a palette from the wallpaper (Android 12+). */
+val supportsDynamicColor: Boolean
+    get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+
+private fun ColorScheme.withAccent(tones: AccentTones): ColorScheme = copy(
+    primary = tones.primary,
+    onPrimary = tones.onPrimary,
+    primaryContainer = tones.primaryContainer,
+    onPrimaryContainer = tones.onPrimaryContainer,
+    secondary = tones.secondary,
+    onSecondary = tones.onSecondary,
+    secondaryContainer = tones.secondaryContainer,
+    onSecondaryContainer = tones.onSecondaryContainer,
+    tertiary = tones.tertiary,
+    onTertiary = tones.onTertiary,
+    tertiaryContainer = tones.tertiaryContainer
+)
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+private fun dynamicScheme(darkTheme: Boolean): ColorScheme {
+    val context = LocalContext.current
+    return if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+}
+
 @Composable
 fun WinsTrackerTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
+    accent: AppAccent = AppAccent.GREEN,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
+    val fixedScheme = remember(darkTheme, accent) {
+        val palette = paletteFor(accent)
+        if (darkTheme) {
+            BaseDarkColorScheme.withAccent(palette.dark)
+        } else {
+            BaseLightColorScheme.withAccent(palette.light)
+        }
+    }
+
+    val colorScheme = if (accent == AppAccent.DYNAMIC && supportsDynamicColor) {
+        dynamicScheme(darkTheme)
+    } else {
+        fixedScheme
+    }
 
     val view = LocalView.current
     if (!view.isInEditMode) {

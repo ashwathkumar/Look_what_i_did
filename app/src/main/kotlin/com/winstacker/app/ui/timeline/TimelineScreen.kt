@@ -5,7 +5,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material.icons.outlined.EmojiEvents
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -17,8 +16,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.winstacker.app.data.model.Category
 import com.winstacker.app.data.model.CategoryCount
 import com.winstacker.app.ui.common.CategoryChip
+import com.winstacker.app.ui.common.SlimTopBar
 import com.winstacker.app.ui.common.WinCard
-import com.winstacker.app.ui.common.parseColor
 import com.winstacker.app.viewmodel.*
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -27,8 +26,8 @@ fun TimelineScreen(
     initialTimeframe: Timeframe = Timeframe.WEEK,
     initialCategoryFilter: String = "all",
     onEditWin: (Long) -> Unit,
+    onBack: () -> Unit,
     onNavigateToSettings: () -> Unit,
-    onNavigateToStats: () -> Unit,
     viewModel: TimelineViewModel = hiltViewModel()
 ) {
     val timeframe by viewModel.timeframe.collectAsStateWithLifecycle()
@@ -54,14 +53,16 @@ fun TimelineScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("Timeline") },
+            SlimTopBar(
+                title = "Summary",
+                onBack = onBack,
                 actions = {
-                    IconButton(onClick = onNavigateToStats) {
-                        Icon(Icons.Outlined.EmojiEvents, contentDescription = "Stats")
-                    }
                     IconButton(onClick = onNavigateToSettings) {
-                        Icon(Icons.Outlined.Settings, contentDescription = "Settings")
+                        Icon(
+                            Icons.Outlined.Settings,
+                            contentDescription = "Settings",
+                            modifier = Modifier.size(20.dp)
+                        )
                     }
                 }
             )

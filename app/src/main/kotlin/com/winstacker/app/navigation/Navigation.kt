@@ -10,7 +10,7 @@ import com.winstacker.app.ui.addwin.AddWinScreen
 import com.winstacker.app.ui.categories.CategoriesScreen
 import com.winstacker.app.ui.home.HomeScreen
 import com.winstacker.app.ui.settings.SettingsScreen
-import com.winstacker.app.ui.stats.StatsScreen
+import com.winstacker.app.ui.streaks.StreaksScreen
 import com.winstacker.app.ui.timeline.TimelineScreen
 import com.winstacker.app.viewmodel.Timeframe
 
@@ -20,12 +20,12 @@ sealed class Screen(val route: String) {
         fun createRoute(
             timeframe: Timeframe = Timeframe.WEEK,
             categoryFilter: String = "all"
-        ) = "timeline?timeframe=${timeframe.name}&categoryFilter=$categoryFilter"
+        ) = "timeline?timeframe=" + timeframe.name + "&categoryFilter=" + categoryFilter
     }
     object AddWin : Screen("add_win?winId={winId}") {
-        fun createRoute(winId: Long = -1L) = "add_win?winId=$winId"
+        fun createRoute(winId: Long = -1L) = "add_win?winId=" + winId
     }
-    object Stats : Screen("stats")
+    object Streaks : Screen("streaks")
     object Categories : Screen("categories")
     object Settings : Screen("settings")
 }
@@ -35,16 +35,29 @@ fun WinsNavHost(
     navController: NavHostController,
     startDestination: String = Screen.Home.route
 ) {
+    // Deep links can make any destination the back-stack root, where
+    // popBackStack() silently fails. Fall back to Home in that case.
+    fun navigateBack() {
+        if (!navController.popBackStack()) {
+            navController.navigate(Screen.Home.route) { launchSingleTop = true }
+        }
+    }
+
     NavHost(navController = navController, startDestination = startDestination) {
 
         composable(Screen.Home.route) {
             HomeScreen(
-                onNavigateToTimeline = { tf ->
+                onNavigateToSettings = { navController.navigate(Screen.Settings.route) },
+                onEditWin = { winId -> navController.navigate(Screen.AddWin.createRoute(winId)) }
+            )
+        }
+
+        composable(Screen.Streaks.route) {
+            StreaksScreen(
+                onOpenSummary = { tf ->
                     navController.navigate(Screen.Timeline.createRoute(timeframe = tf))
                 },
-                onNavigateToSettings = { navController.navigate(Screen.Settings.route) },
-                onNavigateToStats = { navController.navigate(Screen.Stats.route) },
-                onEditWin = { winId -> navController.navigate(Screen.AddWin.createRoute(winId)) }
+                onNavigateToSettings = { navController.navigate(Screen.Settings.route) }
             )
         }
 
@@ -67,8 +80,8 @@ fun WinsNavHost(
                 initialTimeframe = runCatching { Timeframe.valueOf(tfName) }.getOrDefault(Timeframe.WEEK),
                 initialCategoryFilter = catFilter,
                 onEditWin = { winId -> navController.navigate(Screen.AddWin.createRoute(winId)) },
-                onNavigateToSettings = { navController.navigate(Screen.Settings.route) },
-                onNavigateToStats = { navController.navigate(Screen.Stats.route) }
+                onBack = { navigateBack() },
+                onNavigateToSettings = { navController.navigate(Screen.Settings.route) }
             )
         }
 
@@ -82,23 +95,12 @@ fun WinsNavHost(
             )
         ) { backStack ->
             val winId = backStack.arguments?.getLong("winId") ?: -1L
-            // When launched via deep link, AddWin may be the root with no back stack.
-            // Fall back to Home so popBackStack() never silently fails.
-            fun navigateBack() {
-                if (!navController.popBackStack()) {
-                    navController.navigate(Screen.Home.route) { launchSingleTop = true }
-                }
-            }
             AddWinScreen(
                 winId = if (winId == -1L) null else winId,
                 onSaved = { navigateBack() },
                 onDeleted = { navigateBack() },
                 onBack = { navigateBack() }
             )
-        }
-
-        composable(Screen.Stats.route) {
-            StatsScreen()
         }
 
         composable(Screen.Categories.route) {

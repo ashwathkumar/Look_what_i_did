@@ -1,16 +1,39 @@
-package com.winstacker.app.ui.stats
+package com.winstacker.app.ui.streaks
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.filled.TrendingUp
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.automirrored.filled.TrendingUp
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.filled.Today
+import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,18 +42,35 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.winstacker.app.viewmodel.StatsViewModel
+import com.winstacker.app.ui.common.SlimTopBar
+import com.winstacker.app.viewmodel.StreaksViewModel
+import com.winstacker.app.viewmodel.Timeframe
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StatsScreen(
-    viewModel: StatsViewModel = hiltViewModel()
+fun StreaksScreen(
+    onOpenSummary: (Timeframe) -> Unit,
+    onNavigateToSettings: () -> Unit,
+    viewModel: StreaksViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    // Re-read on every visit so the counts reflect wins logged elsewhere.
+    LaunchedEffect(Unit) { viewModel.refresh() }
+
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("Stats") })
+            SlimTopBar(
+                title = "Streaks",
+                actions = {
+                    IconButton(onClick = onNavigateToSettings) {
+                        Icon(
+                            Icons.Outlined.Settings,
+                            contentDescription = "Settings",
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                }
+            )
         }
     ) { padding ->
         if (uiState.isLoading) {
@@ -50,17 +90,8 @@ fun StatsScreen(
                 .fillMaxSize()
                 .padding(padding),
             contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            // Streak section
-            item {
-                Text(
-                    text = "Streaks",
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-
             item {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -69,59 +100,57 @@ fun StatsScreen(
                     StatCard(
                         icon = Icons.Default.LocalFireDepartment,
                         iconColor = Color(0xFFFF6F00),
-                        label = "Current Streak",
-                        value = "${uiState.currentStreak}",
+                        label = "Current streak",
+                        value = uiState.currentStreak.toString(),
                         unit = if (uiState.currentStreak == 1) "day" else "days",
                         modifier = Modifier.weight(1f)
                     )
                     StatCard(
                         icon = Icons.Default.Star,
                         iconColor = Color(0xFFFFD700),
-                        label = "Longest Streak",
-                        value = "${uiState.longestStreak}",
+                        label = "Longest streak",
+                        value = uiState.longestStreak.toString(),
                         unit = if (uiState.longestStreak == 1) "day" else "days",
                         modifier = Modifier.weight(1f)
                     )
                 }
             }
 
-            // Win counts section
             item {
-                Spacer(Modifier.height(8.dp))
+                Spacer(Modifier.height(4.dp))
                 Text(
-                    text = "Win Counts",
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold
+                    text = "Summaries",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
             item {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    WinCountRow(
-                        period = "This Week",
+                    PeriodRow(
+                        period = "This day",
+                        count = uiState.winsToday,
+                        icon = Icons.Default.Today,
+                        onClick = { onOpenSummary(Timeframe.TODAY) }
+                    )
+                    PeriodRow(
+                        period = "This week",
                         count = uiState.winsThisWeek,
-                        icon = Icons.AutoMirrored.Filled.TrendingUp
+                        icon = Icons.AutoMirrored.Filled.TrendingUp,
+                        onClick = { onOpenSummary(Timeframe.WEEK) }
                     )
-                    WinCountRow(
-                        period = "This Month",
+                    PeriodRow(
+                        period = "This month",
                         count = uiState.winsThisMonth,
-                        icon = Icons.Default.EmojiEvents
+                        icon = Icons.Default.CalendarMonth,
+                        onClick = { onOpenSummary(Timeframe.MONTH) }
                     )
-                    WinCountRow(
-                        period = "This Year",
+                    PeriodRow(
+                        period = "This year",
                         count = uiState.winsThisYear,
-                        icon = Icons.Default.Star
+                        icon = Icons.Default.EmojiEvents,
+                        onClick = { onOpenSummary(Timeframe.YEAR) }
                     )
-                }
-            }
-
-            item {
-                Spacer(Modifier.height(8.dp))
-                OutlinedButton(
-                    onClick = viewModel::loadStats,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Refresh Stats")
                 }
             }
         }
@@ -146,13 +175,13 @@ private fun StatCard(
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
             Icon(
                 imageVector = icon,
                 contentDescription = null,
                 tint = iconColor,
-                modifier = Modifier.size(28.dp)
+                modifier = Modifier.size(24.dp)
             )
             Text(
                 text = value,
@@ -173,13 +202,16 @@ private fun StatCard(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun WinCountRow(
+private fun PeriodRow(
     period: String,
     count: Int,
-    icon: ImageVector
+    icon: ImageVector,
+    onClick: () -> Unit
 ) {
     Card(
+        onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant
@@ -189,7 +221,7 @@ private fun WinCountRow(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(horizontal = 16.dp, vertical = 14.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
@@ -205,11 +237,21 @@ private fun WinCountRow(
                 modifier = Modifier.weight(1f)
             )
             Text(
-                text = "$count ${if (count == 1) "win" else "wins"}",
+                text = formatWinCount(count),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary
             )
+            Spacer(Modifier.width(4.dp))
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(20.dp)
+            )
         }
     }
 }
+
+private fun formatWinCount(count: Int): String =
+    if (count == 1) "1 win" else count.toString() + " wins"

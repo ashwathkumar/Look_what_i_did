@@ -7,7 +7,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material.icons.outlined.EmojiEvents
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,19 +19,16 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.winstacker.app.data.model.Category
 import com.winstacker.app.data.model.CategoryCount
 import com.winstacker.app.ui.common.CategoryChip
+import com.winstacker.app.ui.common.SlimTopBar
 import com.winstacker.app.ui.common.WinCard
 import com.winstacker.app.viewmodel.HomeViewModel
-import com.winstacker.app.viewmodel.Timeframe
 import java.time.LocalDate
 import java.time.format.TextStyle
 import java.util.Locale
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    onNavigateToTimeline: (Timeframe) -> Unit,
     onNavigateToSettings: () -> Unit,
-    onNavigateToStats: () -> Unit,
     onEditWin: (Long) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
@@ -48,26 +44,16 @@ fun HomeScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Column {
-                        Text(
-                            text = "Today",
-                            style = MaterialTheme.typography.titleLarge
-                        )
-                        Text(
-                            text = formattedDate(),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                },
+            SlimTopBar(
+                title = "Today",
+                subtitle = formattedDate(),
                 actions = {
-                    IconButton(onClick = onNavigateToStats) {
-                        Icon(Icons.Outlined.EmojiEvents, contentDescription = "Stats")
-                    }
                     IconButton(onClick = onNavigateToSettings) {
-                        Icon(Icons.Outlined.Settings, contentDescription = "Settings")
+                        Icon(
+                            Icons.Outlined.Settings,
+                            contentDescription = "Settings",
+                            modifier = Modifier.size(20.dp)
+                        )
                     }
                 }
             )

@@ -5,18 +5,29 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.outlined.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.LocalFireDepartment
+import androidx.compose.material.icons.outlined.AddCircleOutline
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.LocalFireDepartment
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -40,6 +51,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val settingsViewModel: SettingsViewModel = hiltViewModel()
             val appTheme by settingsViewModel.appTheme.collectAsStateWithLifecycle()
+            val appAccent by settingsViewModel.appAccent.collectAsStateWithLifecycle()
 
             val darkTheme = when (appTheme) {
                 AppTheme.LIGHT -> false
@@ -47,7 +59,7 @@ class MainActivity : ComponentActivity() {
                 AppTheme.SYSTEM -> isSystemInDarkTheme()
             }
 
-            WinsTrackerTheme(darkTheme = darkTheme) {
+            WinsTrackerTheme(darkTheme = darkTheme, accent = appAccent) {
                 WinsTrackerApp(startRoute = deepLinkRoute)
             }
         }
@@ -81,10 +93,13 @@ class MainActivity : ComponentActivity() {
 }
 
 data class BottomNavItem(
+    /** Route to navigate to when the tab is tapped. */
     val route: String,
     val label: String,
     val selectedIcon: ImageVector,
-    val unselectedIcon: ImageVector
+    val unselectedIcon: ImageVector,
+    /** Route prefixes that should light this tab up. */
+    val matchPrefixes: List<String>
 )
 
 val bottomNavItems = listOf(
@@ -92,19 +107,24 @@ val bottomNavItems = listOf(
         route = Screen.Home.route,
         label = "Home",
         selectedIcon = Icons.Filled.Home,
-        unselectedIcon = Icons.Outlined.Home
+        unselectedIcon = Icons.Outlined.Home,
+        matchPrefixes = listOf("home")
     ),
     BottomNavItem(
         route = Screen.AddWin.createRoute(),
         label = "Log a Win",
         selectedIcon = Icons.Filled.AddCircle,
-        unselectedIcon = Icons.Outlined.AddCircleOutline
+        unselectedIcon = Icons.Outlined.AddCircleOutline,
+        matchPrefixes = listOf("add_win")
     ),
     BottomNavItem(
-        route = Screen.Timeline.createRoute(),
-        label = "Timeline",
-        selectedIcon = Icons.Filled.BarChart,
-        unselectedIcon = Icons.Outlined.BarChart
+        route = Screen.Streaks.route,
+        label = "Streaks",
+        selectedIcon = Icons.Filled.LocalFireDepartment,
+        unselectedIcon = Icons.Outlined.LocalFireDepartment,
+        // Timeline is the summary drilled into from a Streaks row, so it keeps
+        // this tab selected.
+        matchPrefixes = listOf("streaks", "timeline")
     )
 )
 
@@ -112,17 +132,10 @@ val bottomNavItems = listOf(
 fun WinsTrackerApp(startRoute: String? = null) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentDestination = navBackStackEntry?.destination
+    val currentRoute = navBackStackEntry?.destination?.route.orEmpty()
 
-    // Routes where bottom nav is visible
-    val bottomNavRoutes = setOf(
-        Screen.Home.route,
-        Screen.Timeline.createRoute().substringBefore("?")
-    )
-
-    val showBottomBar = currentDestination?.route?.let { route ->
-        bottomNavRoutes.any { route.startsWith(it) } || route.startsWith("timeline")
-    } ?: false
+    // Routes where the bottom nav is visible
+    val showBottomBar = listOf("home", "streaks", "timeline").any { currentRoute.startsWith(it) }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -130,9 +143,7 @@ fun WinsTrackerApp(startRoute: String? = null) {
             if (showBottomBar) {
                 NavigationBar {
                     bottomNavItems.forEach { item ->
-                        val isSelected = currentDestination?.hierarchy?.any { dest ->
-                            dest.route?.startsWith(item.route.substringBefore("?")) == true
-                        } == true
+                        val isSelected = item.matchPrefixes.any { currentRoute.startsWith(it) }
 
                         NavigationBarItem(
                             icon = {
@@ -158,7 +169,13 @@ fun WinsTrackerApp(startRoute: String? = null) {
             }
         }
     ) { innerPadding ->
-        Box(modifier = Modifier.padding(innerPadding)) {
+        // Pad for the bottom bar and status bar, then mark those insets as
+        // consumed so each screen's own top bar does not add them a second time.
+        Box(
+            modifier = Modifier
+                .padding(innerPadding)
+                .consumeWindowInsets(innerPadding)
+        ) {
             WinsNavHost(
                 navController = navController,
                 startDestination = startRoute ?: Screen.Home.route

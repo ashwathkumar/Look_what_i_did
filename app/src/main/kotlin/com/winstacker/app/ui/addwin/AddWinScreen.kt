@@ -7,7 +7,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
@@ -19,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.winstacker.app.ui.common.CategoryChip
+import com.winstacker.app.ui.common.SlimTopBar
 import com.winstacker.app.viewmodel.AddWinViewModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -59,6 +59,20 @@ fun AddWinScreen(
         viewModel.saveSuccess.collect { currentOnSaved() }
     }
 
+    fun save() {
+        if (title.isBlank()) {
+            titleError = true
+            return
+        }
+        viewModel.saveWin(
+            existingWin = loadedWin,
+            title = title,
+            notes = notes,
+            categoryId = selectedCategoryId,
+            date = selectedDate
+        )
+    }
+
     // Delete confirmation dialog
     if (showDeleteConfirm && loadedWin != null) {
         AlertDialog(
@@ -94,22 +108,31 @@ fun AddWinScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text(if (winId == null) "Log a Win" else "Edit Win") },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-                    }
-                },
+            // Save sits up here rather than at the bottom of the form, where the
+            // soft keyboard covers it while the notes field has focus.
+            SlimTopBar(
+                title = if (winId == null) "Log a Win" else "Edit Win",
+                onBack = onBack,
                 actions = {
                     if (loadedWin != null) {
                         IconButton(onClick = { showDeleteConfirm = true }) {
                             Icon(
                                 Icons.Default.Delete,
                                 contentDescription = "Delete",
-                                tint = MaterialTheme.colorScheme.error
+                                tint = MaterialTheme.colorScheme.error,
+                                modifier = Modifier.size(20.dp)
                             )
                         }
+                    }
+                    Button(
+                        onClick = { save() },
+                        modifier = Modifier.padding(start = 4.dp, end = 8.dp),
+                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 6.dp)
+                    ) {
+                        Text(
+                            text = if (loadedWin == null) "Save" else "Update",
+                            style = MaterialTheme.typography.labelLarge
+                        )
                     }
                 }
             )
@@ -123,7 +146,7 @@ fun AddWinScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Title field
+            // 1. Title
             OutlinedTextField(
                 value = title,
                 onValueChange = {
@@ -140,18 +163,28 @@ fun AddWinScreen(
                 singleLine = true
             )
 
-            // Notes field
-            OutlinedTextField(
-                value = notes,
-                onValueChange = { notes = it },
-                label = { Text("Notes (optional)") },
-                placeholder = { Text("Any extra context or details...") },
-                modifier = Modifier.fillMaxWidth(),
-                minLines = 3,
-                maxLines = 6
-            )
+            // 2. Category
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(
+                    text = "Category (optional)",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    items(categories) { category ->
+                        CategoryChip(
+                            category = category,
+                            selected = selectedCategoryId == category.id,
+                            onClick = {
+                                selectedCategoryId =
+                                    if (selectedCategoryId == category.id) null else category.id
+                            }
+                        )
+                    }
+                }
+            }
 
-            // Date selector
+            // 3. Date
             OutlinedCard(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -182,51 +215,18 @@ fun AddWinScreen(
                 }
             }
 
-            // Category selector
-            Text(
-                text = "Category (optional)",
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+            // 4. Notes
+            OutlinedTextField(
+                value = notes,
+                onValueChange = { notes = it },
+                label = { Text("Notes (optional)") },
+                placeholder = { Text("Any extra context or details...") },
+                modifier = Modifier.fillMaxWidth(),
+                minLines = 3,
+                maxLines = 6
             )
 
-            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                items(categories) { category ->
-                    CategoryChip(
-                        category = category,
-                        selected = selectedCategoryId == category.id,
-                        onClick = {
-                            selectedCategoryId =
-                                if (selectedCategoryId == category.id) null else category.id
-                        }
-                    )
-                }
-            }
-
             Spacer(Modifier.height(8.dp))
-
-            // Save button
-            Button(
-                onClick = {
-                    if (title.isBlank()) {
-                        titleError = true
-                        return@Button
-                    }
-                    viewModel.saveWin(
-                        existingWin = loadedWin,
-                        title = title,
-                        notes = notes,
-                        categoryId = selectedCategoryId,
-                        date = selectedDate
-                    )
-                },
-                modifier = Modifier.fillMaxWidth(),
-                contentPadding = PaddingValues(16.dp)
-            ) {
-                Text(
-                    text = if (loadedWin == null) "Save Win 🎉" else "Update Win",
-                    style = MaterialTheme.typography.titleMedium
-                )
-            }
         }
     }
 }

@@ -2,13 +2,7 @@ package com.winstacker.app.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Brand palette
-val Primary = Color(0xFF3E8752)        // Theme green
-val PrimaryContainer = Color(0xFFC8E6C9)
-val Secondary = Color(0xFF26A69A)       // Teal
-val SecondaryContainer = Color(0xFFE0F2F1)
-val Tertiary = Color(0xFFFF7043)        // Deep Orange
-val TertiaryContainer = Color(0xFFFBE9E7)
+// Brand roles (primary/secondary/tertiary) live in Accent.kt, one set per palette.
 
 // Surfaces
 val Surface = Color(0xFFFAFAFA)
